@@ -298,6 +298,7 @@ uint32_t
 l2cache_access(uint32_t addr)
 {
     //printf("l2cache access on index:%d, tag:%d\n", get_index(&l2cache, addr), get_tag(&l2cache, addr));
+    ++cur_time;
     ++(*l2cache.ref_ptr);
 
     bool has_flag;
