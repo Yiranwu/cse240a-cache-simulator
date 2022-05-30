@@ -105,9 +105,9 @@ init_cache()
   l2cachePenalties  = 0;
 
     offset_len = floor(log2(blocksize) + EPS);
-    if(icacheAssoc==0) icacheAssoc=1;
-    if(dcacheAssoc==0) dcacheAssoc=1;
-    if(l2cacheAssoc==0) l2cacheAssoc=1;
+    //if(icacheAssoc==0) icacheAssoc=1;
+    //if(dcacheAssoc==0) dcacheAssoc=1;
+    //if(l2cacheAssoc==0) l2cacheAssoc=1;
 
     icache.n_set = icacheSets;
     icache.assoc = icacheAssoc;
@@ -227,6 +227,9 @@ icache_access(uint32_t addr)
 {
     //printf("icache access\n");
     //printf("icache access on index:%d, tag:%d\n", get_index(&icache, addr), get_tag(&icache, addr));
+    if(!icache.n_set)
+        l2cache_access(addr);
+
     ++cur_time;
     ++(*icache.ref_ptr);
 
@@ -263,6 +266,10 @@ dcache_access(uint32_t addr)
 {
     //printf("dcache access\n");
     //printf("dcache access on index:%d, tag:%d\n", get_index(&dcache, addr), get_tag(&dcache, addr));
+
+    if(!dcache.n_set)
+        l2cache_access(addr);
+
     ++cur_time;
     ++(*dcache.ref_ptr);
 
