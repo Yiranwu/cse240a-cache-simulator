@@ -244,10 +244,10 @@ icache_access(uint32_t addr)
         (*icache.penalty_ptr) += penalty;
         //l2cache_evict(addr);
         //printf("icache evicting tag: %d, time: %d\n", *evict_tag_ptr, *evict_time_ptr);
-        if(*evict_time_ptr) {
-            uint32_t evicted_addr = assemble_addr(&icache, get_index(&icache, addr), *evict_tag_ptr);
-            l2cache_add(evicted_addr);
-        }
+        //if(*evict_time_ptr) {
+        //    uint32_t evicted_addr = assemble_addr(&icache, get_index(&icache, addr), *evict_tag_ptr);
+        //    l2cache_add(evicted_addr);
+        //}
         *evict_tag_ptr = get_tag(&icache, addr);
         *evict_time_ptr = cur_time;
         //printf("icache access done\n");
@@ -280,10 +280,10 @@ dcache_access(uint32_t addr)
         (*dcache.penalty_ptr) += penalty;
         //l2cache_evict(addr);
         //printf("dcache evicting tag: %d, time: %d\n", *evict_tag_ptr, *evict_time_ptr);
-        if(*evict_time_ptr) {
-            uint32_t evicted_addr = assemble_addr(&dcache, get_index(&dcache, addr), *evict_tag_ptr);
-            l2cache_add(evicted_addr);
-        }
+        //if(*evict_time_ptr) {
+        //    uint32_t evicted_addr = assemble_addr(&dcache, get_index(&dcache, addr), *evict_tag_ptr);
+        //    l2cache_add(evicted_addr);
+        //}
         *evict_tag_ptr = get_tag(&dcache, addr);
         *evict_time_ptr = cur_time;
         //printf("dcache access done\n");
