@@ -179,15 +179,27 @@ void cache_has(struct AssocCache *cache, uint32_t addr, bool *has_flag, uint32_t
         //printf("second if\n");
         if(cache->times[index][i] < **evict_time_pptr) {
             //printf("second if cond done\n");
-            *evict_time_pptr = &cache->times[index][i];
-            *evict_tag_pptr = &cache->tags[index][i];
+            *evict_time_pptr = &(cache->times[index][i]);
+            *evict_tag_pptr = &(cache->tags[index][i]);
         }
+    }
+    if(cache == &icache) {
+        //if (!*has_flag)
+        //    printf("icache missing cache index: %d, tag: %d\n", index, tag);
+        //printf("icache decided to evict index: %d, tag: %d, time: %d, target tag:%d\n", index, **evict_tag_pptr, **evict_time_pptr, addr);
+
+    }
+    if(cache == &dcache) {
+
+        //if (!*has_flag)
+        //    printf("dcache missing cache index: %d, tag: %d\n", index, tag);
+        //printf("dcache decided to evict index: %d, tag: %d, time: %d, target tag:%d\n", index, **evict_tag_pptr, **evict_time_pptr, addr);
     }
     //printf("cache has done\n");
 }
 
 void l2cache_add(uint32_t addr) {
-
+    //printf("l2cache add index: %d, tag: %d", get_index(&l2cache, addr), get_tag(&l2cache, addr));
     bool has_flag;
     uint32_t *evict_time_ptr, *evict_tag_ptr;
     cache_has(&l2cache, addr, &has_flag, &evict_time_ptr, &evict_tag_ptr);
@@ -195,7 +207,7 @@ void l2cache_add(uint32_t addr) {
     (*evict_time_ptr) = cur_time;
     (*evict_tag_ptr) = get_tag(&l2cache, addr);
 }
-
+/*
 void l2cache_evict(uint32_t addr) {
 
     bool has_flag;
@@ -206,7 +218,7 @@ void l2cache_evict(uint32_t addr) {
     *evict_time_ptr = 0;
 
 }
-
+*/
 // Perform a memory access through the icache interface for the address 'addr'
 // Return the access time for the memory operation
 //
@@ -214,6 +226,7 @@ uint32_t
 icache_access(uint32_t addr)
 {
     //printf("icache access\n");
+    //printf("icache access on index:%d, tag:%d\n", get_index(&icache, addr), get_tag(&icache, addr));
     ++cur_time;
     ++(*icache.ref_ptr);
 
@@ -230,6 +243,7 @@ icache_access(uint32_t addr)
         ++(*icache.miss_ptr);
         (*icache.penalty_ptr) += penalty;
         //l2cache_evict(addr);
+        //printf("icache evicting tag: %d, time: %d\n", *evict_tag_ptr, *evict_time_ptr);
         if(*evict_time_ptr) {
             uint32_t evicted_addr = assemble_addr(&icache, get_index(&icache, addr), *evict_tag_ptr);
             l2cache_add(evicted_addr);
@@ -241,8 +255,6 @@ icache_access(uint32_t addr)
     }
 }
 
-uint32_t dlhit=0, dlmis=0;
-
 // Perform a memory access through the dcache interface for the address 'addr'
 // Return the access time for the memory operation
 //
@@ -250,6 +262,7 @@ uint32_t
 dcache_access(uint32_t addr)
 {
     //printf("dcache access\n");
+    //printf("dcache access on index:%d, tag:%d\n", get_index(&dcache, addr), get_tag(&dcache, addr));
     ++cur_time;
     ++(*dcache.ref_ptr);
 
@@ -266,6 +279,7 @@ dcache_access(uint32_t addr)
         ++(*dcache.miss_ptr);
         (*dcache.penalty_ptr) += penalty;
         //l2cache_evict(addr);
+        //printf("dcache evicting tag: %d, time: %d\n", *evict_tag_ptr, *evict_time_ptr);
         if(*evict_time_ptr) {
             uint32_t evicted_addr = assemble_addr(&dcache, get_index(&dcache, addr), *evict_tag_ptr);
             l2cache_add(evicted_addr);
@@ -283,7 +297,7 @@ dcache_access(uint32_t addr)
 uint32_t
 l2cache_access(uint32_t addr)
 {
-    //printf("l2cache access\n");
+    //printf("l2cache access on index:%d, tag:%d\n", get_index(&l2cache, addr), get_tag(&l2cache, addr));
     ++(*l2cache.ref_ptr);
 
     bool has_flag;
@@ -293,12 +307,13 @@ l2cache_access(uint32_t addr)
     if(has_flag) {
 
         //printf("l2cache access done\n");
+        //printf("l2cache hit!\n");
         return l2cache.hit_time;
     }
-
+    //printf("l2cache mis!\n");
     ++(*l2cache.miss_ptr);
     (*l2cache.penalty_ptr) += memspeed;
-    //l2cache_add(addr);
+    l2cache_add(addr);
 
     //printf("l2cache access\n");
     return l2cache.hit_time + memspeed;
