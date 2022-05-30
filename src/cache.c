@@ -214,7 +214,7 @@ void l2cache_add(uint32_t addr) {
 uint32_t
 icache_access(uint32_t addr)
 {
-    printf("icache access\n");
+    //printf("icache access\n");
     //printf("icache access on index:%d, tag:%d\n", get_index(&icache, addr), get_tag(&icache, addr));
     if(!icache.n_set) {
         l2cache_access(addr);
@@ -229,7 +229,7 @@ icache_access(uint32_t addr)
     cache_has(&icache, addr, &has_flag, &evict_time_ptr, &evict_tag_ptr);
 
     if(has_flag) {
-        printf("icache access done\n");
+        //printf("icache access done\n");
         return icache.hit_time;
     }
     else {
@@ -244,7 +244,7 @@ icache_access(uint32_t addr)
         //}
         *evict_tag_ptr = get_tag(&icache, addr);
         *evict_time_ptr = cur_time;
-        printf("icache access done\n");
+        //printf("icache access done\n");
         return icache.hit_time + penalty;
     }
 }
@@ -255,7 +255,7 @@ icache_access(uint32_t addr)
 uint32_t
 dcache_access(uint32_t addr)
 {
-    printf("dcache access\n");
+    //printf("dcache access\n");
     //printf("dcache access on index:%d, tag:%d\n", get_index(&dcache, addr), get_tag(&dcache, addr));
 
     if(!dcache.n_set) {
@@ -271,7 +271,7 @@ dcache_access(uint32_t addr)
     cache_has(&dcache, addr, &has_flag, &evict_time_ptr, &evict_tag_ptr);
 
     if(has_flag) {
-        printf("dcache access done\n");
+        //printf("dcache access done\n");
         return dcache.hit_time;
     }
     else {
@@ -286,7 +286,7 @@ dcache_access(uint32_t addr)
         //}
         *evict_tag_ptr = get_tag(&dcache, addr);
         *evict_time_ptr = cur_time;
-        printf("dcache access done\n");
+        //printf("dcache access done\n");
         return dcache.hit_time + penalty;
     }
 }
@@ -297,7 +297,7 @@ dcache_access(uint32_t addr)
 uint32_t
 l2cache_access(uint32_t addr)
 {
-    printf("l2cache access on index:%d, tag:%d\n", get_index(&l2cache, addr), get_tag(&l2cache, addr));
+    //printf("l2cache access on index:%d, tag:%d\n", get_index(&l2cache, addr), get_tag(&l2cache, addr));
     ++(*l2cache.ref_ptr);
 
     bool has_flag;
@@ -306,7 +306,7 @@ l2cache_access(uint32_t addr)
 
     if(has_flag) {
 
-        printf("l2cache access done\n");
+        //printf("l2cache access done\n");
         //printf("l2cache hit!\n");
         return l2cache.hit_time;
     }
@@ -315,6 +315,6 @@ l2cache_access(uint32_t addr)
     (*l2cache.penalty_ptr) += memspeed;
     l2cache_add(addr);
 
-    printf("l2cache access done\n");
+    //printf("l2cache access done\n");
     return l2cache.hit_time + memspeed;
 }
