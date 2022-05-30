@@ -218,7 +218,7 @@ icache_access(uint32_t addr)
     //printf("icache access on index:%d, tag:%d\n", get_index(&icache, addr), get_tag(&icache, addr));
     if(!icache.n_set) {
         l2cache_access(addr);
-        return;
+        return 0;
     }
 
     ++cur_time;
@@ -260,7 +260,7 @@ dcache_access(uint32_t addr)
 
     if(!dcache.n_set) {
         l2cache_access(addr);
-        return;
+        return 0;
     }
 
     ++cur_time;
