@@ -251,7 +251,7 @@ icache_access(uint32_t addr)
         *evict_tag_ptr = get_tag(&icache, addr);
         *evict_time_ptr = cur_time;
         //printf("icache access done\n");
-        return penalty;
+        return icache.hit_time + penalty;
     }
 }
 
@@ -287,7 +287,7 @@ dcache_access(uint32_t addr)
         *evict_tag_ptr = get_tag(&dcache, addr);
         *evict_time_ptr = cur_time;
         //printf("dcache access done\n");
-        return penalty;
+        return dcache.hit_time + penalty;
     }
 }
 
